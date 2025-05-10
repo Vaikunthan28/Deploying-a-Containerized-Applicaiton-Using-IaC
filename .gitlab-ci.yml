@@ -112,7 +112,7 @@ build:
 
   rules:
     - when: always
-    
+
 before_script:
   # Install curl and unzip
   - apk add --no-cache curl unzip
@@ -136,9 +136,6 @@ deploy:
   script:
     - aws --version
     - echo "Deploying to ECS cluster:" $CLUSTER_NAME
-    - aws ecs update-service \
-        --cluster $CLUSTER_NAME \
-        --service $SERVICE_NAME \
-        --force-new-deployment
+    - aws ecs update-service --cluster "platform-cluster" --service "platform-service" --force-new-deployment
   rules:
     - when: always
