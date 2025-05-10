@@ -65,6 +65,11 @@ destroy:
   rules:
     - when: manual
 
+before_script:
+  - apk add --no-cache python3 py3-pip
+  - pip3 install awscli
+  - aws --version
+
 build:
   stage: build
   image: docker:latest
