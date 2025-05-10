@@ -13,11 +13,11 @@ stages:
   - destroy      # Tear down resources
   - build        # Build & push Docker image
 
-image:
-  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#image:
+#  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+#   entrypoint:
+#    - '/usr/bin/env'
+#    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
 cache:
   paths:
@@ -32,12 +32,14 @@ before_script:
 
 validate:
   stage: validate
+  image: hashicorp/terraform:1.4.0
   script:
     - cd $TF_ROOT
     - terraform validate
 
 plan:
   stage: plan
+  image: hashicorp/terraform:1.4.0
   script:
     - cd $TF_ROOT
     - terraform plan -out=tfplan -input=false
@@ -49,6 +51,7 @@ plan:
 
 apply:
   stage: apply
+  image: hashicorp/terraform:1.4.0
   script:
     - cd $TF_ROOT
     - terraform apply -input=false tfplan
@@ -58,6 +61,7 @@ apply:
 
 destroy:
   stage: destroy
+  image: hashicorp/terraform:1.4.0
   script:
     - cd $TF_ROOT
     - terraform destroy -auto-approve
