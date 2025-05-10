@@ -112,30 +112,12 @@ build:
 
   rules:
     - when: always
-
-before_script:
-  # Install curl and unzip
-  - apk add --no-cache curl unzip
-
-  # Download and extract AWS CLI v2
-  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  - unzip awscliv2.zip
-
-  # Run the install script with sudo permissions
-  - ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-
-  # Manually move the binary to a globally accessible location
-  - ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws
-
-  # Verify the installation
-  - aws --version
-
 deploy:
   stage: deploy
   image: amazon/aws-cli:latest
   script:
     - aws --version
     - echo "Deploying to ECS cluster:" $CLUSTER_NAME
-    - aws ecs update-service --cluster "platform-cluster" --service "platform-service" --force-new-deployment
+    - aws ecs update-service --cluster "platform-cluster" --service "platform-cluster" --force-new-deployment
   rules:
     - when: always
