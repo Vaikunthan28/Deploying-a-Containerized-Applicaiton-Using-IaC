@@ -25,6 +25,7 @@ image:
 cache:
   paths:
     - .terraform
+    - .aws/
 
 before_script:
   - terraform --version
@@ -115,12 +116,13 @@ build:
     - when: always
 
 deploy:
-  image: amazon/aws-cli:latest
+  image: amazonlinux:2
   stage: deploy
   script:
-    - aws --version
-    - aws configure list
-    - aws s3 ls
+    - yum install -y awscli
+    - /usr/local/bin/aws --version
+    - /usr/local/bin/aws configure list
+    - /usr/local/bin/aws s3 ls
   variables:
     AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
     AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
