@@ -27,6 +27,7 @@ before_script:
   - terraform --version
   - cd terraform/Modules
   - terraform init -backend-config="tfstate.config"
+  - cd ..
 
 validate:
   stage: validate
