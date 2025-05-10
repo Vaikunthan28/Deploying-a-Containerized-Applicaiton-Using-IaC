@@ -23,17 +23,15 @@ cache:
   paths:
     - .terraform
 
+before_script:
+  - terraform --version
+  - terraform init -backend-config="tfstate.config"
+
 validate:
   stage: validate
-  before_script:
-    - terraform --version
-    - terraform init -backend-config="$TF_STATE_CONFIG"
   script:
     - cd $TF_ROOT
-    - terraform fmt -check
     - terraform validate
-  rules:
-    - when: always
 
 plan:
   stage: plan
