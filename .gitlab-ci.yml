@@ -67,9 +67,9 @@ destroy:
 
 build:
   stage: build
-  image: docker:24.0.2   # Use Docker as the main image
+  image: docker:24.0.2  # Use Docker CLI image
   services:
-    - name: docker:24.0.2-dind  # Use Docker dind as a service
+    - name: docker:24.0.2-dind  # Use Docker-in-Docker as service
       alias: docker
   variables:
     DOCKER_DRIVER: overlay2
@@ -77,25 +77,27 @@ build:
     DOCKER_TLS_CERTDIR: ""
 
   before_script:
-    # Update and install required packages
+    # Install required tools
     - apk update && apk add --no-cache docker-cli
     - apk add --no-cache python3 aws-cli
 
-    # Check Docker and AWS CLI versions
+    # Ensure Docker environment variables are properly set
+    - export DOCKER_HOST="tcp://docker:2375"
     - docker --version
     - aws --version
 
-    # Test Docker daemon connectivity
+    # Test Docker connectivity
     - echo "Testing Docker daemon connectivity..."
     - docker info || (echo "Docker daemon not available"; exit 1)
 
-    # Ensure the Docker environment is correctly set
-    - export DOCKER_HOST="tcp://docker:2375"
+    # Validate Docker binary path
+    - which docker
+    - ls -l /usr/local/bin/docker
 
-    # Try listing Docker environment variables to verify
-    - env | grep DOCKER
+    # Fix environment issue with symbolic link
+    - ln -s /usr/local/bin/docker /bin/docker
 
-    # Log in to AWS ECR
+    # Login to AWS ECR
     - echo "Logging in to ECR..."
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
       docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
