@@ -1,0 +1,77 @@
+variables:
+  AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"         # Stored in CI settings
+  AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+  AWS_DEFAULT_REGION: "ap-southeast-2"
+  AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"
+  TF_ROOT: "terraform"
+  TF_STATE_CONFIG: "${TF_ROOT}/tfstate.config"
+
+stages:
+  - validate     # Check formatting and config
+  - plan         # Generate Terraform plan
+  - apply        # Apply Terraform changes
+  - destroy      # Tear down resources
+  - build        # Build & push Docker image
+
+default:
+  image: hashicorp/terraform:1.4.0
+  before_script:
+    - terraform --version
+    - terraform init -backend-config="$TF_STATE_CONFIG"  # Initialize backend
+
+validate:
+  stage: validate
+  script:
+    - cd $TF_ROOT
+    - terraform fmt -check
+    - terraform validate
+  rules:
+    - when: always
+
+plan:
+  stage: plan
+  script:
+    - cd $TF_ROOT
+    - terraform plan -out=tfplan -input=false
+  artifacts:
+    paths:
+      - $TF_ROOT/tfplan
+  rules:
+    - when: always
+
+apply:
+  stage: apply
+  script:
+    - cd $TF_ROOT
+    - terraform apply -input=false tfplan
+  when: manual      # Manual approval to avoid unintended changes
+  rules:
+    - when: manual
+
+destroy:
+  stage: destroy
+  script:
+    - cd $TF_ROOT
+    - terraform destroy -auto-approve
+  when: manual      # Manual to confirm destruction
+  rules:
+    - when: manual
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: "overlay2"
+  before_script:
+    - |
+      aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
+      docker login --username AWS --password-stdin \
+      $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  script:
+    - cd $CI_PROJECT_DIR
+    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
+  rules:
+    - when: always
