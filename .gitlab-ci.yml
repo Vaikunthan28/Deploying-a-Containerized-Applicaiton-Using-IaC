@@ -71,25 +71,41 @@ build:
     name: docker:24.0.2
     entrypoint: [""]
   services:
-     - name: docker:24.0.2-dind
-       alias: docker
+    - name: docker:24.0.2-dind
+      alias: docker
   variables:
-     DOCKER_DRIVER: overlay2
-     DOCKER_HOST: tcp://docker:2375
-     DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
 
   before_script:
-  - apk update && apk add --no-cache docker-cli  
-  - apk add --no-cache python3 aws-cli
-  - docker --version
-  - aws --version
-  - pwd
-  - echo "Logging in to ECR..."
-  - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
-      docker login --username AWS --password-stdin \
-      $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    # Make sure Docker CLI and AWS CLI are installed
+    - apk update && apk add --no-cache docker-cli
+    - apk add --no-cache python3 aws-cli
+
+    # Check Docker and AWS versions
+    - docker --version
+    - aws --version
+
+    # Check Docker daemon connectivity
+    - echo "Testing Docker daemon connectivity..."
+    - docker info || (echo "Docker daemon not available"; exit 1)
+
+    # Attempt to restart Docker service if not running
+    - dockerd &
+    - sleep 5
+
+    # Verify Docker connection again
+    - docker info || (echo "Docker daemon still not available"; exit 1)
+
+    # ECR login
+    - echo "Logging in to ECR..."
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
+        docker login --username AWS --password-stdin \
+        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   script:
+    # Build and push Docker image
     - pwd
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
