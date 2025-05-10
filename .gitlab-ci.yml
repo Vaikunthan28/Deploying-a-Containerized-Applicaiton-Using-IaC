@@ -112,25 +112,31 @@ build:
 
   rules:
     - when: always
+    
+before_script:
+  # Install curl and unzip
+  - apk add --no-cache curl unzip
+
+  # Download and extract AWS CLI v2
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+
+  # Run the install script with sudo permissions
+  - ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+  # Manually move the binary to a globally accessible location
+  - ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws
+
+  # Verify the installation
+  - aws --version
 
 deploy:
   stage: deploy
-  image: alpine:latest
-  before_script:
-    # Install curl and unzip
-    - apk add --no-cache curl unzip
-
-    # Download and install AWS CLI v2
-    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    - unzip awscliv2.zip
-    - ./aws/install --bin-dir /usr/local/bin --update
-
-    # Check AWS version to confirm installation
-    - /usr/local/bin/aws --version
-
+  image: amazon/aws-cli:latest
   script:
+    - aws --version
     - echo "Deploying to ECS cluster:" $CLUSTER_NAME
-    - /usr/local/bin/aws ecs update-service \
+    - aws ecs update-service \
         --cluster $CLUSTER_NAME \
         --service $SERVICE_NAME \
         --force-new-deployment
