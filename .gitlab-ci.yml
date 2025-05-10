@@ -36,8 +36,6 @@ before_script:
 
 validate:
   stage: validate
-  tags:
-    - Self-hosted
   script:
     - cd $TF_ROOT
     - terraform validate
