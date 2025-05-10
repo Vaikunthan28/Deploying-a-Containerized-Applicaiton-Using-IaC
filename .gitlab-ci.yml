@@ -74,17 +74,9 @@ build:
     DOCKER_DRIVER: "overlay2"
 
   before_script:
-    # Install python & pip
-    - apk add --no-cache python3 py3-pip
-    # Create and activate a venv so pip can install without breaking system
-    - python3 -m venv /tmp/venv
-    - source /tmp/venv/bin/activate
-    # Now install AWS CLI inside that venv
-    - pip install awscli
-    - aws --version
-
-    # 2. Login to ECR
-    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
+  - apk add --no-cache python3 aws-cli
+  - aws --version
+  - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
       docker login --username AWS --password-stdin \
       $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
