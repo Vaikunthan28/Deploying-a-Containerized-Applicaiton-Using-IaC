@@ -45,7 +45,7 @@ plan:
     paths:
       - $TF_ROOT/tfplan
   rules:
-    - when: manual
+    - when: always
 
 apply:
   stage: apply
@@ -63,7 +63,7 @@ destroy:
     - terraform destroy -auto-approve
   when: manual      # Manual to confirm destruction
   rules:
-    - when: always
+    - when: manual
 
 build:
   stage: build
