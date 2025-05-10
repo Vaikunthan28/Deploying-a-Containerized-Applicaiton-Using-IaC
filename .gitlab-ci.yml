@@ -113,10 +113,15 @@ build:
 
   rules:
     - when: always
+
 deploy:
-  stage: deploy
   image: amazon/aws-cli:latest
+  stage: deploy
   script:
-    - aws ecs update-service --cluster "platform-cluster" --service "platform-cluster" --force-new-deployment
-  rules:
-    - when: always
+    - aws --version
+    - aws configure list
+    - aws s3 ls
+  variables:
+    AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+    AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+    AWS_DEFAULT_REGION: "ap-southeast-2"
