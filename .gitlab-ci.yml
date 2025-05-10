@@ -108,3 +108,16 @@ build:
 
   rules:
     - when: always
+
+deploy:
+  stage: deploy
+  image: amazon/aws-cli:2.12.0   # AWS CLI image
+  script:
+    - aws ecs update-service \
+        --cluster ${CLUSTER_NAME} \
+        --service ${CLUSTER_NAME} \
+        --force-new-deployment
+  rules:
+    - when: always
+  dependencies:
+    - docker_build
