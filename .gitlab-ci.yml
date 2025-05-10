@@ -68,7 +68,7 @@ destroy:
 build:
   stage: build
   image: 
-    name: docker:latest
+    name: docker:24.0.2
     entrypoint: [""]
   services:
      - name: docker:24.0.2-dind
