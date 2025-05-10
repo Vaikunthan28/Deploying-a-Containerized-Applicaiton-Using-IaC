@@ -67,7 +67,7 @@ destroy:
 
 build:
   stage: build
-  image: docker:24.0.2-dind   # Use the dind image directly for build
+  image: docker:24.0.2
   services:
     - name: docker:24.0.2-dind
       alias: docker
@@ -77,18 +77,29 @@ build:
     DOCKER_TLS_CERTDIR: ""
 
   before_script:
-    # Update packages and install Docker CLI and AWS CLI
+    # Install Docker CLI and AWS CLI
     - apk update && apk add --no-cache docker-cli
     - apk add --no-cache python3 aws-cli
+
+    # Check Docker and AWS versions
     - docker --version
     - aws --version
+
+    # Test Docker daemon connectivity
     - echo "Testing Docker daemon connectivity..."
     - docker info || (echo "Docker daemon not available"; exit 1)
 
-    # Log in to ECR
+    # Print the Docker path to verify location
+    - which docker
+    - ls -l /usr/local/bin/docker
+
+    # Explicitly set Docker host
+    - export DOCKER_HOST="tcp://docker:2375"
+
+    # Attempt to log in to ECR using explicit Docker binary path
     - echo "Logging in to ECR..."
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
-        docker login --username AWS --password-stdin \
+        /usr/local/bin/docker login --username AWS --password-stdin \
         $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   script:
