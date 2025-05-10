@@ -25,7 +25,6 @@ image:
 cache:
   paths:
     - .terraform
-    - .aws/
 
 before_script:
   - terraform --version
@@ -109,17 +108,7 @@ build:
     # Build and push Docker image
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
+    - aws ecs update-service --cluster "platform-cluster" --service "platform-cluster" --force-new-deployment
 
-  rules:
-    - when: always
-
-deploy:
-  stage: deploy
-  script:
-    - aws --version
-    - aws ecs update-service \
-        --cluster $CLUSTER_NAME \
-        --service $SERVICE_NAME \
-        --force-new-deployment
   rules:
     - when: always
