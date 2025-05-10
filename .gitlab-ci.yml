@@ -79,11 +79,12 @@ build:
      DOCKER_TLS_CERTDIR: ""
 
   before_script:
-  - apk add --no-cache docker-cli  
+  - apk update && apk add --no-cache docker-cli  
   - apk add --no-cache python3 aws-cli
   - docker --version
   - aws --version
   - pwd
+  - echo "Logging in to ECR..."
   - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
       docker login --username AWS --password-stdin \
       $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
