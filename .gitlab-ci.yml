@@ -13,11 +13,12 @@ stages:
   - destroy      # Tear down resources
   - build        # Build & push Docker image
 
-default:
-  image: hashicorp/terraform:1.4.0
-  before_script:
-    - terraform --version
-    - terraform init -backend-config="$TF_STATE_CONFIG"  # Initialize backend
+image:
+  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+  
+before_script:
+  - terraform --version
+  - terraform init -backend-config="$TF_STATE_CONFIG"  # Initialize backend
 
 validate:
   stage: validate
