@@ -74,8 +74,13 @@ build:
     DOCKER_DRIVER: "overlay2"
 
   before_script:
-    # 1. Install AWS CLI
-    - apk add --no-cache python3 py3-pip aws-cli
+    # Install python & pip
+    - apk add --no-cache python3 py3-pip
+    # Create and activate a venv so pip can install without breaking system
+    - python3 -m venv /tmp/venv
+    - source /tmp/venv/bin/activate
+    # Now install AWS CLI inside that venv
+    - pip install awscli
     - aws --version
 
     # 2. Login to ECR
