@@ -116,6 +116,13 @@ build:
 deploy:
   stage: deploy
   image: amazon/aws-cli:2.12.0   # AWS CLI image
+  before_script:
+    # Upgrade AWS CLI to the latest version
+    - apk add --no-cache curl unzip
+    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    - unzip awscliv2.zip
+    - ./aws/install --bin-dir /usr/local/bin --update
+    - aws --version  # Confirm the upgrade
   script:
     - aws --version
     - aws ecs update-service \
