@@ -28,6 +28,7 @@ before_script:
   - cd terraform
   - pwd
   - terraform init
+  - cd ..
 
 validate:
   stage: validate
