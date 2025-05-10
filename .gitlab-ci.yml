@@ -99,8 +99,7 @@ build:
 
     # Login to AWS ECR
     - echo "Logging in to ECR..."
-    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
-      docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 826730732655.dkr.ecr.ap-southeast-2.amazonaws.com
 
   script:
     # Build and push Docker image
