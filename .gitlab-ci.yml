@@ -78,12 +78,13 @@ build:
   - apk add --no-cache python3 aws-cli
   - docker --version
   - aws --version
+  - pwd
   - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
       docker login --username AWS --password-stdin \
       $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   script:
-    - cd $CI_PROJECT_DIR
+    - pwd
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
 
