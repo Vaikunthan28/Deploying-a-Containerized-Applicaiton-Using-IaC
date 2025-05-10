@@ -16,12 +16,11 @@ stages:
 image:
   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
   
-before_script:
-  - terraform --version
-  - terraform init -backend-config="$TF_STATE_CONFIG"  # Initialize backend
-
 validate:
   stage: validate
+  before_script:
+    - terraform --version
+    - terraform init -backend-config="$TF_STATE_CONFIG"
   script:
     - cd $TF_ROOT
     - terraform fmt -check
