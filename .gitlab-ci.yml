@@ -7,7 +7,6 @@ variables:
   TF_STATE_CONFIG: "${TF_ROOT}/tfstate.config"
   CLUSTER_NAME: "platform-cluster"
   SERVICE_NAME: "platform-service"
-  TASK_NAME: "platform-task-df"
 
 stages:
   - validate     # Check formatting and config
@@ -36,6 +35,8 @@ before_script:
 
 validate:
   stage: validate
+  tags:
+    - Self-hosted
   script:
     - cd $TF_ROOT
     - terraform validate
