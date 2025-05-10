@@ -117,8 +117,6 @@ deploy:
   stage: deploy
   image: amazon/aws-cli:latest
   script:
-    - aws --version
-    - echo "Deploying to ECS cluster:" $CLUSTER_NAME
     - aws ecs update-service --cluster "platform-cluster" --service "platform-cluster" --force-new-deployment
   rules:
     - when: always
