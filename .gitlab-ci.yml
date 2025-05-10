@@ -25,7 +25,7 @@ cache:
 
 before_script:
   - terraform --version
-  - cd $TF_ROOT
+  - cd terraform
   - terraform init -backend-config="tfstate.config"
 
 validate:
