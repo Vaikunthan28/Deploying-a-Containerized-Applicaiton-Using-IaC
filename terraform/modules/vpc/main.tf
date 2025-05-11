@@ -56,6 +56,17 @@ resource "aws_network_acl_rule" "allow_http_in" {
   from_port      = 80
   to_port        = 80
 }
+# Allow inbound ephemeral ports (return traffic for all high-port outbound connections)
+resource "aws_network_acl_rule" "allow_ephemeral_in" {
+  network_acl_id = aws_network_acl.public.id
+  rule_number    = 110
+  egress         = false
+  protocol       = "6"              # TCP
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 1024
+  to_port        = 65535
+ }
 
 # Allow outbound ephemeral ports for return traffic
 resource "aws_network_acl_rule" "allow_ephemeral_out" {
@@ -67,6 +78,18 @@ resource "aws_network_acl_rule" "allow_ephemeral_out" {
   cidr_block     = "0.0.0.0/0"
   from_port      = 1024
   to_port        = 65535
+}
+
+# Add HTTPS outbound if you want to be explicit (port 443)
+resource "aws_network_acl_rule" "allow_https_out" {
+  network_acl_id = aws_network_acl.public.id
+  rule_number    = 150
+  egress         = true
+  protocol       = "6"              # TCP
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 443
+  to_port        = 443
 }
 
 # Security Group for ECS tasks: allow HTTP inbound and all outbound traffic
