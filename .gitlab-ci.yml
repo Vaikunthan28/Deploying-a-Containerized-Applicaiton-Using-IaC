@@ -108,14 +108,6 @@ build:
     # Build and push Docker image
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
-    # 2. register a new task-def revision that uses that tag
-    - aws ecs describe-task-definition --task-definition platform-cluster \
-        --query 'taskDefinition' > base.json
-    - jq ' .containerDefinitions[0].image =
-          "'"$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:$IMAGE_TAG"'" ' \
-          base.json > new-taskdef.json
-    - aws ecs register-task-definition --cli-input-json file://new-taskdef.json
-
     - aws ecs update-service --cluster "platform-cluster" --service "platform-cluster" --task-definition platform-starter:latest --force-new-deployment
 
   rules:
