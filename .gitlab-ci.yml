@@ -162,7 +162,7 @@ scale:
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   variables:
     # current instance_type: t2.micro
-    NEW_INSTANCE_TYPE: "t3.small"
+    NEW_INSTANCE_TYPE: "t2.micro"
   before_script:
     - cd $TF_ROOT
     - terraform init
