@@ -2,7 +2,7 @@ variables:
   AWS_DEFAULT_REGION: "ap-southeast-2"
   AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"         # Set in CI/CD Settings
   TF_ROOT: "terraform"
-  TF_STATE_CONFIG: "$TF_ROOT/tfstate.config"
+  TF_STATE_CONFIG: "$tfstate.config"
   CLUSTER_NAME: "platform-cluster"            # Your ECS Cluster & Service name
   SERVICE_NAME: "platform-cluster"
 
@@ -25,7 +25,7 @@ validate:
   before_script:
     - cd $TF_ROOT
     - terraform --version
-    - terraform init
+    - terraform init -backend-config="$TF_STATE_CONFIG"
   script:
     - terraform fmt -check
     - terraform validate
