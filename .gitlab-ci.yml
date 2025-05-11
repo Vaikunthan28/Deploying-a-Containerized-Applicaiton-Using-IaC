@@ -11,6 +11,7 @@ stages:
   - validate
   - plan
   - apply
+  - destroy
   - build
   - refresh
   - deploy
@@ -69,6 +70,21 @@ apply:
   rules:
     - when: manual
 
+destroy:
+  stage: destroy
+  image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  before_script:
+    - cd $TF_ROOT
+    - terraform init
+  script:
+    - terraform destroy -auto-approve
+  when: manual      # Manual to confirm destruction
+  rules:
+    - when: manual
 # ──────────────────────────────────────────────────────────────────────────────
 build:
   stage: build
