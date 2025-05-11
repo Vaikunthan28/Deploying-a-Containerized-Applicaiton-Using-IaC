@@ -68,7 +68,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
       min_healthy_percentage = 50
       instance_warmup        = 120
     }
-    triggers = ["launch_template"]
+    #triggers = ["launch_template"]
   }
 }
 
