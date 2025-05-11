@@ -85,7 +85,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 resource "aws_ecs_task_definition" "app" {
   family                   = var.cluster_name
   requires_compatibilities = ["EC2"]
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   cpu                      = var.task_cpu
   memory                   = var.task_memory
   execution_role_arn       = var.task_exec_role_arn
@@ -98,7 +98,7 @@ resource "aws_ecs_task_definition" "app" {
       memory    = var.task_memory
       essential = true
       portMappings = [
-        { containerPort = 80, hostPort = 80, protocol = "tcp" }
+        { containerPort = 80, hostPort = 80 }
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -121,11 +121,11 @@ resource "aws_ecs_service" "app" {
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = var.desired_capacity
 
-  network_configuration {
-    subnets          = var.public_subnet_ids    # your public subnet IDs
-    security_groups  = [var.ecs_sg_id]          # SG allowing port 80
-    assign_public_ip = true                     # give each task a public IP
-  }
+  #network_configuration {
+  #  subnets          = var.public_subnet_ids    # your public subnet IDs
+  #  security_groups  = [var.ecs_sg_id]          # SG allowing port 80
+  #  assign_public_ip = true                     # give each task a public IP
+  #}
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.asg_cp.name
     weight            = 1
