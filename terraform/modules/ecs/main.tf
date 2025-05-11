@@ -61,6 +61,15 @@ resource "aws_autoscaling_group" "ecs_asg" {
       propagate_at_launch = true
     }
   }
+  # As soon as the launch_template changes, start a rolling replacement
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+      instance_warmup        = 120
+    }
+    triggers = ["launch_template"]
+  }
 }
 
 # 4. ECS Capacity Provider connecting ASG
