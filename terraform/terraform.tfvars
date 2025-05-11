@@ -5,7 +5,7 @@ public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
 common_tags = {Project = "platform-assignment"}
 repository_name = "platform-starter"
 
-cluster_name      = "platform-cluster"
+cluster_name      = "cluster-1"
 instance_type     = "t2.micro"
 min_capacity      = 1
 desired_capacity  = 1
