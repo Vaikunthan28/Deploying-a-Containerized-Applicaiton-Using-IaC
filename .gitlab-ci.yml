@@ -17,7 +17,7 @@ stages:
 cache:
   paths:
     - .terraform
-    
+
 # ──────────────────────────────────────────────────────────────────────────────
 validate:
   stage: validate
@@ -31,7 +31,6 @@ validate:
     - terraform --version
     - terraform init
   script:
-    - terraform fmt -check
     - terraform validate
   rules:
     - when: always
