@@ -81,14 +81,15 @@ build:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   before_script:
+    # Install required tools
+    - apk update && apk add --no-cache docker-cli
+    - apk add --no-cache python3 aws-cli
+
+    # Ensure Docker environment variables are properly set
+    - export DOCKER_HOST="tcp://docker:2375"
     - docker --version
-    - apk add --no-cache curl unzip python3
-    - curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
-    - unzip -q awscliv2.zip && ./aws/install
     - aws --version
-    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
-        docker login --username AWS --password-stdin \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 826730732655.dkr.ecr.ap-southeast-2.amazonaws.com
   script:
     - cd $CI_PROJECT_DIR
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
