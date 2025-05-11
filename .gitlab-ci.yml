@@ -42,8 +42,10 @@ plan:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
+  before_script:
     - cd $TF_ROOT
+    - terraform init
+  script:
     - terraform plan -out=tfplan -input=false
   artifacts:
     paths:
@@ -58,8 +60,10 @@ apply:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
+  before_script:
     - cd $TF_ROOT
+    - terraform init
+  script:
     - terraform apply -input=false tfplan
   when: manual
   rules:
