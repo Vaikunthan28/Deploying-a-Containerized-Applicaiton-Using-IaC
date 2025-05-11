@@ -123,10 +123,14 @@ refresh_taskdef:
 # ──────────────────────────────────────────────────────────────────────────────
 deploy:
   stage: deploy
-  image: amazon/aws-cli:latest
+  image:
+    name: public.ecr.aws/aws-cli/aws-cli:latest
+    entrypoint:
+      - /bin/sh
+      - -lc
   needs: ["refresh_taskdef"]
   script:
     - echo "Forcing new deployment on $CLUSTER_NAME/$SERVICE_NAME"
     - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
   rules:
-    - when: manual
+    - when: always
