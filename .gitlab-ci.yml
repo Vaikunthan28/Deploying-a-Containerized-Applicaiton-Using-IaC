@@ -14,6 +14,7 @@ stages:
   - apply        # Apply Terraform changes
   - destroy      # Tear down resources
   - build        # Build & push Docker image
+  - refresh
   - deploy
 
 image:
