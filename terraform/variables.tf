@@ -26,7 +26,7 @@ variable "repository_name" {
   default     = "platform-starter"
 }
 
-variable "cluster_name"      { default = "platform-cluster" }
+variable "cluster_name"      { default = "cluster-1" }
 variable "instance_type"     { default = "t2.micro" }
 variable "min_capacity"      { default = 1 }
 variable "desired_capacity"  { default = 1 }
