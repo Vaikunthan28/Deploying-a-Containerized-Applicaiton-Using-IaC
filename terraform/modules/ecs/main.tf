@@ -22,6 +22,10 @@ resource "aws_launch_template" "ecs_lt" {
   iam_instance_profile {
     arn = var.instance_profile_arn
   }
+  # Attach the ECS security group (allows port 80)
+  vpc_security_group_ids = [
+    var.ecs_sg_id
+  ]  
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
