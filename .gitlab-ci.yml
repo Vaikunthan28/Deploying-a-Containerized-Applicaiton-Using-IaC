@@ -117,7 +117,7 @@ build:
 refresh_taskdef:
   stage: refresh
   image:
-    name: public.ecr.aws/aws-cli/aws-cli:latest
+    name: public.ecr.aws/aws-cli/aws-cli:2.27.12
     entrypoint:
       - /bin/sh
       - -lc
@@ -140,7 +140,7 @@ refresh_taskdef:
 deploy:
   stage: deploy
   image:
-    name: public.ecr.aws/aws-cli/aws-cli:latest
+    name: public.ecr.aws/aws-cli/aws-cli:2.27.12
     entrypoint:
       - /bin/sh
       - -lc
