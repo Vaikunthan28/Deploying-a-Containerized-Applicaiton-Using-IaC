@@ -14,10 +14,9 @@ stages:
   - build
   - refresh
   - deploy
-before_script:
-    - cd terraform
-    - terraform --version
-    - terraform init
+cache:
+  paths:
+    - .terraform
 # ──────────────────────────────────────────────────────────────────────────────
 validate:
   stage: validate
