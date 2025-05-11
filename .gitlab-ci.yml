@@ -1,47 +1,46 @@
 variables:
-  #AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"         # Stored in CI settings
-  #AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+  AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"         # Stored in CI settings
+  AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
   AWS_DEFAULT_REGION: "ap-southeast-2"
-  AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"         # Set in CI/CD Settings
+  AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"
   TF_ROOT: "terraform"
-  CLUSTER_NAME: "platform-cluster"            # Your ECS Cluster & Service name
+  TF_STATE_CONFIG: "${TF_ROOT}/tfstate.config"
+  CLUSTER_NAME: "platform-cluster"
   SERVICE_NAME: "platform-cluster"
 
 stages:
-  - validate
-  - plan
-  - apply
-  - build
-  - refresh
+  - validate     # Check formatting and config
+  - plan         # Generate Terraform plan
+  - apply        # Apply Terraform changes
+  - destroy      # Tear down resources
+  - build        # Build & push Docker image
   - deploy
+
+image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
 cache:
   paths:
     - .terraform
-# ──────────────────────────────────────────────────────────────────────────────
+
+before_script:
+  - terraform --version
+  - cd terraform
+  - pwd
+  - terraform init
+  - cd ..
+
 validate:
   stage: validate
-  image:
-   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-   entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  before_script:
-    - cd terraform
-    - terraform --version
-    - terraform init
   script:
-    - terraform fmt -check
+    - cd $TF_ROOT
     - terraform validate
-  rules:
-    - when: always
 
 plan:
   stage: plan
-  image:
-   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-   entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
     - cd $TF_ROOT
     - terraform plan -out=tfplan -input=false
@@ -53,15 +52,19 @@ plan:
 
 apply:
   stage: apply
-  image:
-   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-   entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
     - cd $TF_ROOT
     - terraform apply -input=false tfplan
-  when: manual
+  when: manual      # Manual approval to avoid unintended changes
+  rules:
+    - when: manual
+
+destroy:
+  stage: destroy
+  script:
+    - cd $TF_ROOT
+    - terraform destroy -auto-approve
+  when: manual      # Manual to confirm destruction
   rules:
     - when: manual
 
