@@ -2,7 +2,6 @@ variables:
   AWS_DEFAULT_REGION: "ap-southeast-2"
   AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"         # Set in CI/CD Settings
   TF_ROOT: "terraform"
-  TF_STATE_CONFIG: "$tfstate.config"
   CLUSTER_NAME: "platform-cluster"            # Your ECS Cluster & Service name
   SERVICE_NAME: "platform-cluster"
 
@@ -25,7 +24,7 @@ validate:
   before_script:
     - cd $TF_ROOT
     - terraform --version
-    - terraform init -backend-config="$TF_STATE_CONFIG"
+    - terraform init
   script:
     - terraform fmt -check
     - terraform validate
@@ -39,10 +38,8 @@ plan:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  before_script:
-    - cd $TF_ROOT
-    - terraform init -backend-config="$TF_STATE_CONFIG"
   script:
+    - cd $TF_ROOT
     - terraform plan -out=tfplan -input=false
   artifacts:
     paths:
@@ -57,10 +54,8 @@ apply:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  before_script:
-    - cd $TF_ROOT
-    - terraform init -backend-config="$TF_STATE_CONFIG"
   script:
+    - cd $TF_ROOT
     - terraform apply -input=false tfplan
   when: manual
   rules:
