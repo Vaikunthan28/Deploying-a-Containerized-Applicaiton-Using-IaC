@@ -112,7 +112,7 @@ refresh_taskdef:
     # sanity check
     - aws --version && echo "CLUSTER=$CLUSTER_NAME SERVICE=$SERVICE_NAME"
     - aws ecs describe-task-definition --task-definition $CLUSTER_NAME --query 'taskDefinition' > base.json
-    - apk add --no-cache jq
+    - yum install -y jq
     - jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' base.json \
         > new-taskdef.json
     - NEW_ARN=$(aws ecs register-task-definition --cli-input-json file://new-taskdef.json \
