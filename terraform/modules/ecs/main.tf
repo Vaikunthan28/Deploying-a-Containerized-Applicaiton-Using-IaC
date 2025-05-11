@@ -130,3 +130,9 @@ resource "aws_ecs_service" "app" {
 
   depends_on = [aws_ecs_cluster_capacity_providers.this]
 }
+# CloudWatch Log Group for ECS task logs
+resource "aws_cloudwatch_log_group" "ecs" {
+  name              = "/ecs/${var.cluster_name}"
+  retention_in_days = 7                # change as you like
+  tags              = var.tags
+}
