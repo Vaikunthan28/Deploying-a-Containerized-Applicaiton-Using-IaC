@@ -17,7 +17,11 @@ stages:
 # ──────────────────────────────────────────────────────────────────────────────
 validate:
   stage: validate
-  image: hashicorp/terraform:1.4.0
+  image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   before_script:
     - cd $TF_ROOT
     - terraform --version
@@ -30,7 +34,11 @@ validate:
 
 plan:
   stage: plan
-  image: hashicorp/terraform:1.4.0
+  image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   before_script:
     - cd $TF_ROOT
     - terraform init -backend-config="$TF_STATE_CONFIG"
@@ -44,7 +52,11 @@ plan:
 
 apply:
   stage: apply
-  image: hashicorp/terraform:1.4.0
+  image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   before_script:
     - cd $TF_ROOT
     - terraform init -backend-config="$TF_STATE_CONFIG"
