@@ -95,7 +95,7 @@ refresh_taskdef:
         > new-taskdef.json
     - NEW_ARN=$(aws ecs register-task-definition --cli-input-json file://new-taskdef.json \
         --query 'taskDefinition.taskDefinitionArn' --output text)
-    - echo "New task-def ARN: $NEW_ARN"
+    - echo "New task-def ARN:" $NEW_ARN
     - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $NEW_ARN
   rules:
     - when: always
