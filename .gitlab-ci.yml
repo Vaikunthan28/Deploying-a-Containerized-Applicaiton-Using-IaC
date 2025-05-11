@@ -17,6 +17,7 @@ stages:
 cache:
   paths:
     - .terraform
+    
 # ──────────────────────────────────────────────────────────────────────────────
 validate:
   stage: validate
