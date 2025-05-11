@@ -85,7 +85,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 resource "aws_ecs_task_definition" "app" {
   family                   = var.cluster_name
   requires_compatibilities = ["EC2"]
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   cpu                      = var.task_cpu
   memory                   = var.task_memory
   execution_role_arn       = var.task_exec_role_arn
