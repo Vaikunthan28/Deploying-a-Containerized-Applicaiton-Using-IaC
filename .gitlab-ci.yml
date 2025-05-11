@@ -119,7 +119,7 @@ build:
 refresh_taskdef:
   stage: refresh
   image:
-    name: public.ecr.aws/aws-cli/aws-cli:2.27.12
+    name: amazon/aws-cli:2.27.12
     entrypoint:
       - /bin/sh
       - -lc
@@ -142,7 +142,7 @@ refresh_taskdef:
 deploy:
   stage: deploy
   image:
-    name: public.ecr.aws/aws-cli/aws-cli:2.27.12
+    name: amazon/aws-cli:2.27.12
     entrypoint:
       - /bin/sh
       - -lc
@@ -162,7 +162,7 @@ scale:
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   variables:
     # current instance_type: t2.micro
-    NEW_INSTANCE_TYPE: "t2.micro"
+    NEW_INSTANCE_TYPE: "t3.small"
   before_script:
     - cd $TF_ROOT
     - terraform init
