@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([
     {
       name      = var.cluster_name
-      image     = var.repository_url
+      image     = "${var.repository_url}:latest"
       cpu       = var.task_cpu
       memory    = var.task_memory
       essential = true
@@ -123,16 +123,10 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
+  launch_type     = "EC2"
 
-  network_configuration {
-    subnets         = var.public_subnet_ids
-    security_groups = [var.ecs_sg_id]
-  }
-
-  capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.asg_cp.name
-    weight            = 1
-  }
+  # No network_configuration needed in bridge mode
+  # simply relies on hostPort mapping above
 
   depends_on = [aws_ecs_cluster_capacity_providers.this]
 }
