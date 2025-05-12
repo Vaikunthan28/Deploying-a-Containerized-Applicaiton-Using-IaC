@@ -54,7 +54,8 @@ Components:
 
 
 ### Pending Issues
-SNS → GitLab subscription confirmation: direct HTTPS remains in PendingConfirmation.
+1. SNS → GitLab subscription confirmation: direct HTTPS remains in PendingConfirmation.
+2. Manually restart the EC2 instance to take effect on the vertical scaling.
 
 Steps:
 
