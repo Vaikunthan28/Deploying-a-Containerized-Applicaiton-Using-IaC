@@ -171,6 +171,7 @@ scale:
       when: on_success
     - when: never  
   before_script:
+    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
     - cd $TF_ROOT
     - terraform init
   script:
@@ -185,13 +186,12 @@ destroy:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: manual
-    - when: never
   before_script:
     - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
     - cd $TF_ROOT
     - terraform init
   script:
     - terraform destroy -auto-approve  
+  when: manual
+  rules:
+    - when: manual  
