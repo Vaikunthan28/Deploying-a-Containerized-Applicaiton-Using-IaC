@@ -26,6 +26,11 @@ variable "repository_name" {
   default     = "platform-starter"
 }
 
+variable "GITLAB_TRIGGER_URL" {
+  description = "GitLab pipeline trigger webhook URL"
+  type        = string
+}
+
 variable "cluster_name"      { default = "cluster-1" }
 variable "instance_type"     { default = "t2.micro" }
 variable "min_capacity"      { default = 1 }

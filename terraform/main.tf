@@ -34,3 +34,9 @@ module "ecs" {
   task_memory        = var.task_memory
   tags               = var.common_tags
 }
+module "monitoring" {
+  source      = "./modules/monitoring"
+  cluster_name = module.ecs.cluster_name    # "cluster-1"
+  asg_name     = module.ecs.asg_name        # ASG name output
+  trigger_url  = var.GITLAB_TRIGGER_URL     # from CI/CD variables
+}

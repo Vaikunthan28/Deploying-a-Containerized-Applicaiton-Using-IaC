@@ -6,6 +6,7 @@ variables:
   TF_ROOT: "terraform"
   CLUSTER_NAME: "cluster-1"            # Your ECS Cluster & Service name
   SERVICE_NAME: "cluster-1"
+  ASG_NAME: "platform-cluster-asg"
 
 stages:
   - validate
@@ -29,6 +30,10 @@ validate:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
   before_script:
     - cd terraform
     - terraform --version
@@ -45,6 +50,10 @@ plan:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
   before_script:
     - cd $TF_ROOT
     - terraform init
@@ -53,8 +62,6 @@ plan:
   artifacts:
     paths:
       - $TF_ROOT/tfplan
-  rules:
-    - when: always
 
 apply:
   stage: apply
@@ -63,14 +70,15 @@ apply:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   before_script:
     - cd $TF_ROOT
     - terraform init
   script:
     - terraform apply -input=false tfplan
-  when: manual
-  rules:
-    - when: manual
 
 destroy:
   stage: destroy
@@ -79,14 +87,15 @@ destroy:
    entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
   before_script:
     - cd $TF_ROOT
     - terraform init
   script:
     - terraform destroy -auto-approve
-  when: manual      # Manual to confirm destruction
-  rules:
-    - when: manual
 # ──────────────────────────────────────────────────────────────────────────────
 build:
   stage: build
@@ -113,7 +122,9 @@ build:
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest .
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/platform-starter:latest
   rules:
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
 
 # ──────────────────────────────────────────────────────────────────────────────
 refresh_taskdef:
@@ -136,7 +147,9 @@ refresh_taskdef:
     - echo "New task-def ARN:" $NEW_ARN
     - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $NEW_ARN
   rules:
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
 
 # ──────────────────────────────────────────────────────────────────────────────
 deploy:
@@ -151,7 +164,9 @@ deploy:
     - echo "Forcing new deployment on $CLUSTER_NAME/$SERVICE_NAME"
     - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
   rules:
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
 
 scale:
   stage: scale
@@ -163,6 +178,10 @@ scale:
   variables:
     # current instance_type: t2.micro
     NEW_INSTANCE_TYPE: "t3.small"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'   # only runs on webhook triggers
+      when: on_success
+    - when: never  
   before_script:
     - cd $TF_ROOT
     - terraform init
@@ -170,5 +189,3 @@ scale:
     - echo "Scaling EC2 instances to type:" $NEW_INSTANCE_TYPE
     - terraform apply -auto-approve -var="instance_type=$NEW_INSTANCE_TYPE"
   when: manual        # manual trigger in the UI
-  rules:
-    - when: manual
