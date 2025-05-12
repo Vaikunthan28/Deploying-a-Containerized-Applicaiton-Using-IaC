@@ -48,7 +48,8 @@ Components:
 - CloudWatch Alarm → SNS → GitLab trigger (manual scale)  
 - GitLab pipeline for infra- & application deployment
 
-![image.png](attachment:c1949cf6-a581-4dce-89e8-1cdd9b95395d:fe100e5e-ff8d-4c40-aed8-61c79c44c91a.png)
+<img width="1430" alt="image" src="https://github.com/user-attachments/assets/02979283-5592-4ddd-97dd-aad9544c5a02" />
+
 
 ### Pending Issues
 SNS → GitLab subscription confirmation: direct HTTPS remains in PendingConfirmation.
