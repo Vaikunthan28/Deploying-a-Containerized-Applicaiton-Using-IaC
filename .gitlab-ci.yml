@@ -12,11 +12,11 @@ stages:
   - validate
   - plan
   - apply
-  - destroy
   - build
   - refresh
   - deploy
   - scale
+  - destroy
 
 cache:
   paths:
@@ -82,26 +82,11 @@ apply:
   script:
     - terraform apply -input=false tfplan
 
-destroy:
-  stage: destroy
-  image:
-   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-   entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: manual
-    - when: never
-  before_script:
-    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
-    - cd $TF_ROOT
-    - terraform init
-  script:
-    - terraform destroy -auto-approve
 # ──────────────────────────────────────────────────────────────────────────────
 build:
   stage: build
+  needs:
+    - job: plan      # <-- start as soon as plan succeeds
   image: docker:24.0.2
   services:
     - name: docker:24.0.2-dind
@@ -192,3 +177,21 @@ scale:
     - echo "Scaling EC2 instances to type:" $NEW_INSTANCE_TYPE
     - terraform apply -auto-approve -var="instance_type=$NEW_INSTANCE_TYPE"
   when: manual        # manual trigger in the UI
+
+destroy:
+  stage: destroy
+  image:
+   name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+   entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
+  before_script:
+    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
+    - cd $TF_ROOT
+    - terraform init
+  script:
+    - terraform destroy -auto-approve  
