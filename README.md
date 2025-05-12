@@ -99,12 +99,22 @@ To support vertical scaling, I added a dedicated scale job in the same pipeline 
 
 ### Undone job: Here I keep trying to scale the instance type without terminating the current instance. after the scale job is completed, it affects only in ASG. I have to manually terminate the instance to take effect.
 
+![image](https://github.com/user-attachments/assets/59caec11-4bbf-49c3-bfc4-0aa2da03c8b2)
+
+
 ![image](https://github.com/user-attachments/assets/8c88fb66-0fbb-491b-84a2-778ea745b255)
 
-![image.png](attachment:08db5a70-268a-4698-9b59-89494e005a9a:image.png)
-![image.png](attachment:4ac2f2bb-b0df-42bd-8b96-e479085bbb1f:image.png)
+![image](https://github.com/user-attachments/assets/47cee1a4-fc4f-4101-8c3a-a02167151ee6)
 
+<img width="1439" alt="image" src="https://github.com/user-attachments/assets/5d808da6-4719-46ee-a06d-3ea5f68470af" />
 
+6. Monitoring
+
+Finally, I enabled awslogs in the ECS task definition so that all container stdout and stderr is captured in CloudWatch Logs under /ecs/<cluster_name>. I also configured a CloudWatch alarm on EC2 CPU usage that publishes to an SNS topic. The final step—confirming the SNS-to-GitLab subscription—remains pending due to the required handshake
+
+![image](https://github.com/user-attachments/assets/1e321aab-8ed9-4ecf-84dc-59519c2c934b)
+
+![image](https://github.com/user-attachments/assets/086bad61-c731-4e71-aa0e-493f881c12d7)
 
    
 
