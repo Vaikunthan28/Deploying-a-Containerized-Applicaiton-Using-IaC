@@ -116,6 +116,12 @@ Finally, I enabled awslogs in the ECS task definition so that all container stdo
 
 ![image](https://github.com/user-attachments/assets/086bad61-c731-4e71-aa0e-493f881c12d7)
 
+This narrative outlines the full journey from local prototype to automated deployment and manual vertical scaling, complete with Terraform modules, CI/CD orchestration, and logging and monitoring integration.
+
+![image](https://github.com/user-attachments/assets/98766842-af95-47b3-b436-a390516bf469)
+![image](https://github.com/user-attachments/assets/6d3dcf99-d156-44c5-b699-f65cb4585f6c)
+
+
    
 
 
