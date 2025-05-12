@@ -92,6 +92,13 @@ With infrastructure in place, I turned to automation. I created a .gitlab-ci.yml
 ![image](https://github.com/user-attachments/assets/9b12d4ec-3837-49c5-9cb7-050b10567229)
 ![image](https://github.com/user-attachments/assets/d35c4e5e-59d6-4e41-b146-51d8bd84b564)
 ![image](https://github.com/user-attachments/assets/ca1a2e82-cce0-47cd-b4e1-3f358950073f)
+![image](https://github.com/user-attachments/assets/2e76a1ec-21ed-4d96-a8c4-10fcf230d7f4)
+![image](https://github.com/user-attachments/assets/53ae6889-d582-4150-b5bd-ca028f9f6cde)
+![image](https://github.com/user-attachments/assets/7b25e8d0-1c2f-4bc9-9cd0-3b6e57e67171)
+![image](https://github.com/user-attachments/assets/a28393b3-890f-4b76-a37f-4286ee85ced9)
+![image](https://github.com/user-attachments/assets/ef06981c-9fad-4979-b9b8-d774d0e1edc8)
+![image](https://github.com/user-attachments/assets/c7604ff6-ea5d-4946-950d-5085b1035790)
+![image](https://github.com/user-attachments/assets/3d1be7cb-8545-4d93-9bc8-692e73fde586)
 
 5. Vertical Scaling
 
@@ -110,7 +117,7 @@ To support vertical scaling, I added a dedicated scale job in the same pipeline 
 
 6. Monitoring
 
-Finally, I enabled awslogs in the ECS task definition so that all container stdout and stderr is captured in CloudWatch Logs under /ecs/<cluster_name>. I also configured a CloudWatch alarm on EC2 CPU usage that publishes to an SNS topic. The final step—confirming the SNS-to-GitLab subscription—remains pending due to the required handshake
+Finally, I enabled awslogs in the ECS task definition so that all container stdout and stderr is captured in CloudWatch Logs under /ecs/cluster_name. I also configured a CloudWatch alarm on EC2 CPU usage that publishes to an SNS topic. The final step—confirming the SNS-to-GitLab subscription—remains pending due to the required handshake
 
 ![image](https://github.com/user-attachments/assets/1e321aab-8ed9-4ecf-84dc-59519c2c934b)
 
