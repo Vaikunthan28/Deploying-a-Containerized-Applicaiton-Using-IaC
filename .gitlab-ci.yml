@@ -55,6 +55,7 @@ plan:
       when: on_success
     - when: never
   before_script:
+    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
     - cd $TF_ROOT
     - terraform init
   script:
@@ -75,6 +76,7 @@ apply:
       when: manual
     - when: never
   before_script:
+    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
     - cd $TF_ROOT
     - terraform init
   script:
@@ -92,6 +94,7 @@ destroy:
       when: manual
     - when: never
   before_script:
+    - export TF_VAR_GITLAB_TRIGGER_URL="$GITLAB_TRIGGER_URL"
     - cd $TF_ROOT
     - terraform init
   script:
