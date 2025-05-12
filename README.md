@@ -23,19 +23,21 @@ DevSecOps means adding security checks into every step of building and deploying
 
 ### Project Structure & Files
 
-```
-terraform/
-├── modules/
-│   ├── vpc/                   # VPC, subnets, SG, NACL
-│   ├── ecs/                   # ECS cluster, ASG, launch template, task def, service
-│   ├── ecr/                   # ECR repository
-│   └── monitoring/            # CloudWatch alarms & SNS
-├── main.tf                   # Root module calls all modules
-├── variables.tf              # Root input definitions
-├── terraform.tfvars          # Variable values (backend, trigger URL)
-└── backend.tf                # S3/DynamoDB backend config
+### Project Structure & Files
 
-.gitlab-ci.yml               # GitLab CI/CD pipeline
+```
+├─ terraform/                   # All Terraform configs
+│  ├─ modules/
+│  │  ├─ vpc/                   # VPC, subnets, SG, NACL
+│  │  ├─ ecs/                   # ECS cluster, ASG, LT, TaskDef, Service, CloudWatch Logs
+│  │  ├─ ecr/                   # ECR repository
+│  │  └─ monitoring/            # SNS & CloudWatch alarm
+│  ├─ main.tf                   # Root module calls all modules
+│  ├─ variables.tf              # Root input definitions
+│  ├─ terraform.tfvars          # Variable values (backend, trigger URL)
+│  └─ backend.tf                # S3 / DynamoDB backend config
+│
+└─ .gitlab-ci.yml               # GitLab CI/CD pipeline
 ```
 
 
