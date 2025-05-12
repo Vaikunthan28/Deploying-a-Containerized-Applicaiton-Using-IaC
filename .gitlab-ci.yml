@@ -4,8 +4,8 @@ variables:
   AWS_DEFAULT_REGION: "ap-southeast-2"
   AWS_ACCOUNT_ID: "${AWS_ACCOUNT_ID}"         # Set in CI/CD Settings
   TF_ROOT: "terraform"
-  CLUSTER_NAME: "cluster-1"            # Your ECS Cluster & Service name
-  SERVICE_NAME: "cluster-1"
+  CLUSTER_NAME: "cluster-1"            # ECS Cluster & Service name
+  SERVICE_NAME: "cluster-1"            # ECS Cluster & Service name 
   ASG_NAME: "platform-cluster-asg"
 
 stages:
