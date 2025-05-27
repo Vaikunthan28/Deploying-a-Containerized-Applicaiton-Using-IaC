@@ -57,7 +57,7 @@ Wrote a simple Dockerfile based on nginx:1.24-alpine that removed the default co
 
 2. Created AWS Free Tier Account
 
-Logged into my AWS account and created an IAM user with admin access. Created an S3 bucket (terraform-state-vaikunthan) and a DynamoDB table (terraform-locks) for Terraform state and locking.
+Logged into the AWS account and created an IAM user with admin access. Created an S3 bucket (terraform-state-vaikunthan) and a DynamoDB table (terraform-locks) for Terraform state and locking.
 
 ![image](https://github.com/user-attachments/assets/f36bad5b-dbf0-4451-95fd-13af84c70a6e)
 
