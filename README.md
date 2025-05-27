@@ -3,7 +3,7 @@
 
 ### Introduction
 
-**Brief description of the assignment objectives:**
+**Brief description of this project's objectives:**
 
 - Build a simple static-site container (Nginx) and deploy to AWS ECS on EC2 with Terraform
 - Automate infrastructure provisioning via GitLab CI/CD
@@ -11,7 +11,7 @@
 
 ### Status:
 - ✅ Local prototype & Terraform infra + CI/CD build/deploy ✅
-- ⚠️ Vertical scaling available manually via scale job; automatic SNS→GitLab trigger pending.
+- ⚠️ Vertical scaling available manually via scale job; automatic SNS→GitLab trigger is pending.
 - 📋 CloudWatch Logs enabled for ECS Task definitions.
 
 ### Project Structure & Files
@@ -46,10 +46,6 @@ Components:
 <img width="1430" alt="image" src="https://github.com/user-attachments/assets/02979283-5592-4ddd-97dd-aad9544c5a02" />
 
 
-### Pending Issues
-1. SNS → GitLab subscription confirmation: direct HTTPS remains in PendingConfirmation.
-2. Manually restart the EC2 instance to take effect on the vertical scaling.
-
 Steps:
 
 1. Ran the Application locally:
@@ -71,7 +67,7 @@ Logged into my AWS account and created an IAM user with admin access. Created an
 
 3. Terraform Modules
 
-Next, I structured the Terraform code into modular components: a VPC module to provide a networking foundation, an IAM module to grant ECS tasks and EC2 instances the correct permissions, an ECR module to host the container image, and an ECS module that deployed a cluster on EC2 with an Auto Scaling Group, Launch Template, task definition (including awslogs logging), and service definition in bridge mode. I wired all these modules together in the root configuration and tested end to end by running terraform apply, which provisioned my VPC, ECS cluster, ECR repository, and associated resources.
+Next, I structured the Terraform code into modular components: a VPC module to provide a networking foundation, an IAM module to grant ECS tasks and EC2 instances the correct permissions, an ECR module to host the container image, and an ECS module that deployed a cluster on EC2 with an Auto Scaling Group, Launch Template, task definition (including awslogs logging), and service definition in bridge mode. I wired all these modules together in the root configuration and tested end-to-end by running terraform apply, which provisioned my VPC, ECS cluster, ECR repository, and associated resources.
 
 ![image](https://github.com/user-attachments/assets/a8b10bd5-2ba3-4ebc-b003-d42e66077622)
 ![image](https://github.com/user-attachments/assets/b65fcede-b800-44aa-ab6c-5febcd678b17)
@@ -100,8 +96,6 @@ With infrastructure in place, I turned to automation. I created a .gitlab-ci.yml
 
 To support vertical scaling, I added a dedicated scale job in the same pipeline that only executes when triggered via the GitLab pipeline trigger webhook. This job applies a Terraform change to update the EC2 instance type in the Launch Template and then starts an ASG instance refresh to roll in the new size with manual instance termination. I confirmed this workflow by overriding the NEW_INSTANCE_TYPE variable in GitLab, observing Terraform update the launch template, and watching the ASG automatically replace the old t2.micro instances with t3.small ones.
 
-### Undone job: Here I keep trying to scale the instance type without terminating the current instance. after the scale job is completed, it affects only in ASG. I have to manually terminate the instance to take effect.
-
 ![image](https://github.com/user-attachments/assets/59caec11-4bbf-49c3-bfc4-0aa2da03c8b2)
 
 
@@ -113,7 +107,7 @@ To support vertical scaling, I added a dedicated scale job in the same pipeline 
 
 6. Monitoring
 
-Finally, I enabled awslogs in the ECS task definition so that all container stdout and stderr is captured in CloudWatch Logs under /ecs/cluster_name. I also configured a CloudWatch alarm on EC2 CPU usage that publishes to an SNS topic. The final step—confirming the SNS-to-GitLab subscription—remains pending due to the required handshake
+Finally, I enabled awslogs in the ECS task definition so that all container stdout and stderr is captured in CloudWatch Logs under /ecs/cluster_name. Also configured a CloudWatch alarm on EC2 CPU usage that publishes to an SNS topic.
 
 ![image](https://github.com/user-attachments/assets/1e321aab-8ed9-4ecf-84dc-59519c2c934b)
 
