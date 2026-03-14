@@ -1,4 +1,3 @@
-
 # Deploying a Containerized Application Using IaC
 
 ### Introduction
