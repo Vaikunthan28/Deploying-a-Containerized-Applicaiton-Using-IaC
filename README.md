@@ -13,6 +13,8 @@
 - ⚠️ Vertical scaling available manually via scale job; automatic SNS→GitLab trigger is pending.
 - 📋 CloudWatch Logs enabled for ECS Task definitions.
 
+- 
+
 ### Project Structure & Files
 
 ### Project Structure & Files
